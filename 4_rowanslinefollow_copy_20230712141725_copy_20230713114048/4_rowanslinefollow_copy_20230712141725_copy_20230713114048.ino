@@ -1,0 +1,139 @@
+
+#include <math.h>
+
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include "LOLIN_I2C_MOTOR.h"
+#include <RocksAndRobots.h>
+#define OLED_RESET 0  // GPIO0
+Adafruit_SSD1306 display(OLED_RESET);
+
+LOLIN_I2C_MOTOR motors;
+int MotorL = MOTOR_CH_A;
+int MotorR = MOTOR_CH_B;
+
+
+int LEDpin = 2;
+int trigPinL = 19;
+int echoPinL = 23;
+int countPinL = 5;
+int lightPinL = 13;
+
+int lightPinM = 36;
+
+int trigPinR = 17;
+int echoPinR = 16;
+int countPinR = 18;
+int lightPinR = 15;
+
+float lightL, lightR, distanceL, distanceR, revoL, revoR, rpmL, rpmR;
+
+/*
+ * Drive in a straight line
+ */
+//------------------------------------------------------------
+
+
+
+void setup() {
+  Serial.begin(115200);
+  setupDisplay();
+  pinMode(trigPinL, OUTPUT);
+  pinMode(echoPinL, INPUT);
+  pinMode(trigPinR, OUTPUT);
+  pinMode(echoPinR, INPUT);
+  pinMode(countPinL, INPUT);
+  pinMode(countPinR, INPUT);
+  pinMode(lightPinL, INPUT);
+  pinMode(lightPinM, INPUT);
+  pinMode(lightPinR, INPUT);
+  pinMode(LEDpin, OUTPUT);
+  digitalWrite(LEDpin, HIGH);
+  motors.getInfo();  // Make sure the motor shield is plugged in and healthy.
+  while (motors.PRODUCT_ID != PRODUCT_ID_I2C_MOTOR) {
+    Serial.print(motors.PRODUCT_ID);
+    Serial.println("Motor shield disconnected!");
+    delay(100);
+    digitalWrite(LEDpin, HIGH);
+    delay(100);
+    digitalWrite(LEDpin, LOW);
+    motors.getInfo();
+  }
+  motors.changeFreq(MOTOR_CH_BOTH, 1000);
+  motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
+  motors.changeStatus(MotorR, MOTOR_STATUS_CW);
+  motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+  motors.changeDuty(MotorR, 0);
+  setupCounters();
+}
+
+// int convR = 40;
+// int convL = 40;
+
+void loop() {
+  lightL = analogRead(lightPinL) + 1.0;
+  lightR = analogRead(lightPinR)+1.0;
+
+  int motorSpeedR=40;
+  int motorSpeedL=40;
+
+  motorSpeedR = constrain(map(lightL, 0, 500, 0, 50), 30,70);
+  motorSpeedL = constrain(map(lightR, 0, 500, 0, 50), 30, 70);
+
+  // float maj=mlr-mll;
+
+  // motorSpeedR*=maj;
+  // motorSpeedL*=-maj;
+
+  Serial.print("motorSpeedL ");
+  Serial.println(motorSpeedL);
+  Serial.print("motorSpeedR ");
+  Serial.println(motorSpeedR);
+
+  // float lightRatio = lightL / lightR;
+
+  // int lightMotorSpeedR = lightRatio / 50.;
+  // int lightMotorSpeedL = lightRatio * 50.;
+
+  // int motorSpeedL = lightMotorSpeedR + convL;
+  // int motorSpeedR = lightMotorSpeedL + convR;
+      
+
+    
+  // if ( lightR > 1000) {
+  //   motorSpeedL = 50;
+  //   motorSpeedR = 20;
+  // }
+
+  float runTime = 0.001 * millis();
+  distanceL = sonarDist(trigPinL, echoPinL);
+  distanceR = sonarDist(trigPinR, echoPinR);
+  
+  revoL = getRotations(counterL);
+  revoR = getRotations(counterR);
+  float ratio = 1.0;
+
+  // if ( revoL > 0.0 && revoR > 0.0 ) {
+  //     motorSpeedR = 40.0 * (revoL / revoR);
+  //     motorSpeedL = 40.0 * (revoR / revoL);
+  //   }
+
+  // motorSpeedR = constrain(motorSpeedR, 0/*convR - 10*/, convR + 15);
+  // motorSpeedL = constrain(motorSpeedL, 0/*convL - 10*/, convL + 15);
+
+   if ( distanceL < 30.0 or distanceR < 30) { 
+     motorSpeedR = 0;
+   motorSpeedL = 0;
+  }
+  
+  motors.changeDuty(MotorL, motorSpeedL); 
+  motors.changeDuty(MotorR, motorSpeedR);
+  delay(100);
+
+  //Serial.print(runTime, 3);
+ 
+  //drawStatus();
+  //printStatus();
+}

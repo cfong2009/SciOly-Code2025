@@ -72,7 +72,33 @@ void setup() {
   motors.changeDuty(MotorR, 0);
   setupCounters();
 }
-  
+
+void printEncoder() {
+    display.setCursor(0,0);
+    display.print("LR: ");
+    display.print((float)counterL.rawCount, 2);
+    display.setCursor(0,20);
+    display.print("RR: ");
+    display.print((float)counterR.rawCount, 2);
+    display.display();
+}
+
+void Turn(TarL, TarR, d) {
+  if (d == "R") {
+    motors.changeStatus(MotorL, MOTOR_STATUS_CW);
+    motors.changeStatus(MotorR, MOTOR_STATUS_CW);
+    while ((float)counterL.rawCount < tarL && (float)counterR.rawCount < tarR) {
+      motors.changeDuty(MotorL, motorSpeedL);  // Speed zero is stopped.
+      motors.changeDuty(MotorR, motorSpeedR);
+    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, 0);
+    
+
+  } else if (d == "L") {
+
+  }
+}
+
 void loop() {
   
   float runTime = 0.001 * millis();

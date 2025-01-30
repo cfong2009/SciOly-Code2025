@@ -79,18 +79,20 @@ void loop() {
   distanceL = sonarDist(trigPinL, echoPinL);
   distanceR = sonarDist(trigPinR, echoPinR);
   delay(1000);
-  int motorSpeedL = 28;
-  int motorSpeedR = 28;
+  int motorSpeedL = 40;
+  int motorSpeedR = 40;
   revoL = getRotations(counterL);
   revoR = getRotations(counterR);
   float tarL = (float)counterL.rawCount + 10;
   float tarR = (float)counterR.rawCount + 10;
+  motors.changeStatus(MotorL, MOTOR_STATUS_CW);
+  motors.changeStatus(MotorR, MOTOR_STATUS_CW);
+  motors.changeDuty(MotorL, motorSpeedL);  // Speed zero is stopped.
+  motors.changeDuty(MotorR, motorSpeedR);
   
   while ((float)counterL.rawCount < tarL && (float)counterR.rawCount < tarR) {
-    motors.changeStatus(MotorL, MOTOR_STATUS_CW);
-    motors.changeStatus(MotorR, MOTOR_STATUS_CW);
-    motors.changeDuty(MotorL, motorSpeedL);  // Speed zero is stopped.
-    motors.changeDuty(MotorR, motorSpeedR);
+    
+    
     display.setCursor(0,0);
     display.print("LR: ");
     display.print((float)counterL.rawCount, 2);

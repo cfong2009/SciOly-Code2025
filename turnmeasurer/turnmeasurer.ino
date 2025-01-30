@@ -89,7 +89,8 @@ void Turn(TarL, TarR, d) {
     motors.changeStatus(MotorR, MOTOR_STATUS_CW);
     motors.changeDuty(MotorL, motorSpeedL);  // Speed zero is stopped.
     motors.changeDuty(MotorR, motorSpeedR);
-    while ((float)counterL.rawCount < tarL && (float)counterR.rawCount < tarR) {
+    while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
+      
       printEncoder()
     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
     motors.changeDuty(MotorR, 0);

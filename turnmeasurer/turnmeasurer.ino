@@ -1,6 +1,6 @@
-
+#include <string>
 #include <math.h>
-
+#include <Arduino.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -83,12 +83,12 @@ void printEncoder() {
     display.display();
 }
 
-void Turn(TarL, TarR, d) {
+void Turn(float tarL, float tarR, std::string d, int Speed) {
   if (d == "R") {
     motors.changeStatus(MotorL, MOTOR_STATUS_CW);
     motors.changeStatus(MotorR, MOTOR_STATUS_CW);
-    motors.changeDuty(MotorL, motorSpeedL);  // Speed zero is stopped.
-    motors.changeDuty(MotorR, motorSpeedR);
+    motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, Speed);
     while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
       if ((float)counterL.rawCount >= tarL) {
         motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
@@ -96,115 +96,47 @@ void Turn(TarL, TarR, d) {
       if ((float)counterR.rawCount >= tarR) {
         motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
     }
-      printEncoder()
+    }
+    display.clearDisplay();
+
+    printEncoder();
     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
     motors.changeDuty(MotorR, 0);
     float overTurnL = (float)counterL.rawCount - tarL;
     float overTurnR = (float)counterR.rawCount - tarR;
     if (abs(overTurnL) + abs(overTurnR) > 0) {
       if (overTurnL > 0 && overTurnR > 0) {
-        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "L");
-      } else if (overTurnL < 0 && overturnR < 0) {
-        Turn((float)counterL.rawCount - overTurnL, (float)counterR.rawCount - overTurnR, "R");
+        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "L", Speed); 
+      } else if (overTurnL < 0 && overTurnR < 0) { 
+        Turn((float)counterL.rawCount - overTurnL, (float)counterR.rawCount - overTurnR, "R", Speed); 
       } else {
           if (overTurnL + overTurnR > 0) {
-            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "L") //L > R
+            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "L", Speed);  //L > R
           } else {
-            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "R")// R > L
+            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "R", Speed); // R > L
           }
       }
 
     }
-    
-    
-  } else if (d == "L") {
-     motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
-    motors.changeStatus(MotorR, MOTOR_STATUS_CCW);
-    motors.changeDuty(MotorL, motorSpeedL);  // Speed zero is stopped.
-    motors.changeDuty(MotorR, motorSpeedR);
-    while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
-      if ((float)counterL.rawCount >= tarL) {
-        motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
-    }
-      if ((float)counterR.rawCount >= tarR) {
-        motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
-    }
-      printEncoder()
-    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
-    motors.changeDuty(MotorR, 0);
-    float overTurnL = (float)counterL.rawCount - tarL;
-    float overTurnR = (float)counterR.rawCount - tarR;
-    if (abs(overTurnL) + abs(overTurnR) > 0) {
-      if (overTurnL > 0 && overTurnR > 0) {
-        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "R");
-      } else if (overTurnL < 0 && overturnR < 0) {
-        Turn((float)counterL.rawCount - overTurnL, (float)counterR.rawCount - overTurnR, "L");
-      } else {
-          if (overTurnL + overTurnR > 0) {
-            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "R") //L > R
-          } else {
-            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "L")// R > L
-          }
-      }
+    display.clearDisplay();
 
-    }
-
+    printEncoder();
   }
 }
 
 void loop() {
   
   float runTime = 0.001 * millis();
-  distanceL = sonarDist(trigPinL, echoPinL);
-  distanceR = sonarDist(trigPinR, echoPinR);
-  delay(1000);
-  int motorSpeedL = 28;
-  int motorSpeedR = 28;
+  
+  int motorSpeedL = 40;
+  int motorSpeedR = 40;
   revoL = getRotations(counterL);
   revoR = getRotations(counterR);
   float tarL = (float)counterL.rawCount + 10;
   float tarR = (float)counterR.rawCount + 10;
-  
-  while ((float)counterL.rawCount < tarL && (float)counterR.rawCount < tarR) {
-    motors.changeStatus(MotorL, MOTOR_STATUS_CW);
-    motors.changeStatus(MotorR, MOTOR_STATUS_CW);
-    motors.changeDuty(MotorL, motorSpeedL);  // Speed zero is stopped.
-    motors.changeDuty(MotorR, motorSpeedR);
-    display.setCursor(0,0);
-    display.print("LR: ");
-    display.print((float)counterL.rawCount, 2);
-    display.setCursor(0,20);
-    display.print("RR: ");
-    display.print((float)counterR.rawCount, 2);
-    display.display();
-    display.clearDisplay();
-  }
-  motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
-  motors.changeDuty(MotorR, 0);
-  display.setCursor(0,0);
-  display.print("LR: ");
-  display.print((float)counterL.rawCount, 2);
-  display.setCursor(0,20);
-  display.print("RR: ");
-  display.print((float)counterR.rawCount, 2);
-  display.display();
   display.clearDisplay();
+  printEncoder();
 
-  delay(2000);
-  // float endtime = millis();
-  // while (1) {
-  //   display.setCursor(0,0);
-  //   display.print("LR: ");
-  //   display.print(endtime, 2);
-  //   delay(100);
-  //   display.clearDisplay();
-  // }
-   
-
-  // display.setCursor(0,0);
-  // display.print("LR: ");
-  // display.print((float)counterL.rawCount, 2);
-  
-  // delay(100);
-  // display.clearDisplay();
+  delay(5000);
+  Turn(tarL, tarR, "R", 40);
 }

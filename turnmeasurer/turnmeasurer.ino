@@ -99,23 +99,55 @@ void Turn(TarL, TarR, d) {
       printEncoder()
     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
     motors.changeDuty(MotorR, 0);
-    float overTurnL = (float)counterL.rawCount - tarL
-    float overTurnR = (float)counterR.rawCount - tarR
+    float overTurnL = (float)counterL.rawCount - tarL;
+    float overTurnR = (float)counterR.rawCount - tarR;
     if (abs(overTurnL) + abs(overTurnR) > 0) {
       if (overTurnL > 0 && overTurnR > 0) {
-        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "L")
+        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "L");
       } else if (overTurnL < 0 && overturnR < 0) {
-        Turn((float)counterL.rawCount - overTurnL, (float)counterR.rawCount - overTurnR, "R")
+        Turn((float)counterL.rawCount - overTurnL, (float)counterR.rawCount - overTurnR, "R");
       } else {
           if (overTurnL + overTurnR > 0) {
-            
-          } 
+            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "L") //L > R
+          } else {
+            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "R")// R > L
+          }
       }
 
     }
     
     
   } else if (d == "L") {
+     motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
+    motors.changeStatus(MotorR, MOTOR_STATUS_CCW);
+    motors.changeDuty(MotorL, motorSpeedL);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, motorSpeedR);
+    while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
+      if ((float)counterL.rawCount >= tarL) {
+        motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    }
+      if ((float)counterR.rawCount >= tarR) {
+        motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
+    }
+      printEncoder()
+    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, 0);
+    float overTurnL = (float)counterL.rawCount - tarL;
+    float overTurnR = (float)counterR.rawCount - tarR;
+    if (abs(overTurnL) + abs(overTurnR) > 0) {
+      if (overTurnL > 0 && overTurnR > 0) {
+        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "R");
+      } else if (overTurnL < 0 && overturnR < 0) {
+        Turn((float)counterL.rawCount - overTurnL, (float)counterR.rawCount - overTurnR, "L");
+      } else {
+          if (overTurnL + overTurnR > 0) {
+            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "R") //L > R
+          } else {
+            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "L")// R > L
+          }
+      }
+
+    }
 
   }
 }

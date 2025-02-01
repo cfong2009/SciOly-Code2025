@@ -115,14 +115,20 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
         Serial.println(overTurnR);
         motors.changeStatus(MotorL, MOTOR_STATUS_CW);
         motors.changeStatus(MotorR, MOTOR_STATUS_CW);
+        motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
+        motors.changeDuty(MotorR, Speed);
         while ((float)counterL.rawCount < (float)counterL.rawCount + max(0, overTurnL - 1) || (float)counterR.rawCount < (float)counterR.rawCount + max(0, overTurnR - 1)) {
           if ((float)counterL.rawCount >= (float)counterL.rawCount + max(0, overTurnL - 1)) {
             motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
         }
           if ((float)counterR.rawCount >= (float)counterR.rawCount + max(0, overTurnR - 1)) {
             motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
+          
     }
+    
     }
+    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, 0);
    
       } else {
           if (overTurnL + overTurnR > 0) {
@@ -132,6 +138,8 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
             // Turn((float)counterL.rawCount +  max(0, overTurnL - 1), (float)counterR.rawCount + max(0 ,overTurnR - 1), "L", max(35, Speed - 5));  //L > R
             motors.changeStatus(MotorL, MOTOR_STATUS_CW);
             motors.changeStatus(MotorR, MOTOR_STATUS_CW);
+            motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
+            motors.changeDuty(MotorR, Speed);
             while ((float)counterL.rawCount < (float)counterL.rawCount + max(0, overTurnL - 1) || (float)counterR.rawCount < (float)counterR.rawCount + max(0, overTurnR - 1)) {
               if ((float)counterL.rawCount >= (float)counterL.rawCount + max(0, overTurnL - 1)) {
                 motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
@@ -140,6 +148,8 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
                 motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
         }
     }
+    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, 0);
           
 
           }
@@ -152,6 +162,8 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
   } else {
     motors.changeStatus(MotorL, MOTOR_STATUS_CW);
     motors.changeStatus(MotorR, MOTOR_STATUS_CW);
+    motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, Speed);
     motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
     motors.changeDuty(MotorR, Speed);
     while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
@@ -185,6 +197,8 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
         Serial.println(overTurnR);
         motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
         motors.changeStatus(MotorR, MOTOR_STATUS_CCW);
+        motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
+        motors.changeDuty(MotorR, Speed);
         while ((float)counterL.rawCount < (float)counterL.rawCount + max(0, overTurnL - 1) || (float)counterR.rawCount < (float)counterR.rawCount + max(0, overTurnR - 1)) {
               if ((float)counterL.rawCount >= (float)counterL.rawCount + max(0, overTurnL - 1)) {
                 motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
@@ -193,6 +207,8 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
                 motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
         }
     }
+    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, 0);
         
       } else {
           if (overTurnL + overTurnR > 0) {
@@ -203,6 +219,8 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
             // Turn((float)counterL.rawCount + max(0, overTurnL - 1), (float)counterR.rawCount +  max(0, overTurnR - 1), "R", max(35, Speed - 5));  //L > R
             motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
             motors.changeStatus(MotorR, MOTOR_STATUS_CCW);
+            motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
+            motors.changeDuty(MotorR, Speed);
             while ((float)counterL.rawCount < (float)counterL.rawCount + max(0, overTurnL - 1) || (float)counterR.rawCount < (float)counterR.rawCount + max(0, overTurnR - 1)) {
               if ((float)counterL.rawCount >= (float)counterL.rawCount + max(0, overTurnL - 1)) {
                 motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
@@ -211,6 +229,8 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
                 motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
         }
     }
+    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, 0);
           }
       }
 
@@ -232,8 +252,8 @@ void loop() {
   int motorSpeedR = 40;
   revoL = getRotations(counterL);
   revoR = getRotations(counterR);
-  float tarL = (float)counterL.rawCount + 8;
-  float tarR = (float)counterR.rawCount + 8;
+  float tarL = (float)counterL.rawCount + 9;
+  float tarR = (float)counterR.rawCount + 9;
   display.clearDisplay();
   printEncoder();
 

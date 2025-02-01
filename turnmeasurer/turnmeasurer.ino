@@ -97,19 +97,23 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
         motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
     }
     }
+    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, 0);
     display.clearDisplay();
 
     printEncoder();
-    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
-    motors.changeDuty(MotorR, 0);
-    float overTurnL = (float)counterL.rawCount - tarL;
-    float overTurnR = (float)counterR.rawCount - tarR;
+   
+    int overTurnL = (int)counterL.rawCount - (int)tarL;
+    int overTurnR = (int)counterR.rawCount - (int)tarR;
+    Serial.println(overTurnL);
+    Serial.println(overTurnR);
+
     if (abs(overTurnL) + abs(overTurnR) > 0) {
       if (overTurnL > 0 && overTurnR > 0) {
         Serial.println("recurse PP");
         Serial.println(overTurnL);
         Serial.println(overTurnR);
-        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "L", Speed); 
+        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "L", max(35, Speed - 5)); 
         
       } else if (overTurnL < 0 && overTurnR < 0) { 
         Serial.println("recurse NN");
@@ -122,7 +126,7 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
             Serial.println("recurse L > R R");
             Serial.println(overTurnL);
             Serial.println(overTurnR);
-            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "L", Speed);  //L > R
+            Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount +overTurnR, "L", max(35, Speed - 5));  //L > R
             
           } else {
             Serial.println("recurse R > L R");
@@ -155,14 +159,23 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
     printEncoder();
     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
     motors.changeDuty(MotorR, 0);
-    float overTurnL = (float)counterL.rawCount - tarL;
-    float overTurnR = (float)counterR.rawCount - tarR;
+    int overTurnL = (int)counterL.rawCount - (int)tarL;
+    int overTurnR = (int)counterR.rawCount - (int)tarR;
+    Serial.println(overTurnL);
+    Serial.println((float)counterL.rawCount);
+    Serial.println((float)tarL);
+
+    Serial.println(overTurnR);
+    Serial.println((float)counterR.rawCount);
+    Serial.println((float)tarR);
+
+
     if (abs(overTurnL) + abs(overTurnR) > 0) {
       if (overTurnL > 0 && overTurnR > 0) {
-        Serial.println("recurse PP");
+        Serial.println("recurse PPL");
         Serial.println(overTurnL);
         Serial.println(overTurnR);
-        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "R", Speed); 
+        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "R", max(35, Speed - 5)); 
       } else if (overTurnL < 0 && overTurnR < 0) { 
         Serial.println("recurse NN");
         Serial.println(overTurnL);
@@ -174,14 +187,14 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
             Serial.println("recurse asd");
             Serial.println(overTurnL);
             Serial.println(overTurnR);
-            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "L", Speed);  //L > R
+            Serial.println(floor((overTurnL + overTurnR) / 2));
+            Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "R", max(35, Speed - 5));  //L > R
             
           } else {
             Serial.println("recurse asdfgaghtd");
             Serial.println(overTurnL);
             Serial.println(overTurnR);
-            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "R", Speed); // R > L
-        
+            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "L", Speed); // R > L        
           }
       }
 

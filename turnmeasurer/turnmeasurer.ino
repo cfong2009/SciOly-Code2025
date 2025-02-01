@@ -113,16 +113,33 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
         Serial.println("recurse PP");
         Serial.println(overTurnL);
         Serial.println(overTurnR);
-        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "L", max(35, Speed - 5)); 
-      
+        motors.changeStatus(MotorL, MOTOR_STATUS_CW);
+        motors.changeStatus(MotorR, MOTOR_STATUS_CW);
+        while ((float)counterL.rawCount < (float)counterL.rawCount + max(0, overTurnL - 1) || (float)counterR.rawCount < (float)counterR.rawCount + max(0, overTurnR - 1)) {
+          if ((float)counterL.rawCount >= (float)counterL.rawCount + max(0, overTurnL - 1)) {
+            motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+        }
+          if ((float)counterR.rawCount >= (float)counterR.rawCount + max(0, overTurnR - 1)) {
+            motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
+    }
+    }
    
       } else {
           if (overTurnL + overTurnR > 0) {
             Serial.println("recurse L > R R");
             Serial.println(overTurnL);
             Serial.println(overTurnR);
-            Turn((float)counterL.rawCount +  max(0, overTurnL - 1), (float)counterR.rawCount + max(0 ,overTurnR - 1), "L", max(35, Speed - 5));  //L > R
-            
+            // Turn((float)counterL.rawCount +  max(0, overTurnL - 1), (float)counterR.rawCount + max(0 ,overTurnR - 1), "L", max(35, Speed - 5));  //L > R
+            motors.changeStatus(MotorL, MOTOR_STATUS_CW);
+            motors.changeStatus(MotorR, MOTOR_STATUS_CW);
+            while ((float)counterL.rawCount < (float)counterL.rawCount + max(0, overTurnL - 1) || (float)counterR.rawCount < (float)counterR.rawCount + max(0, overTurnR - 1)) {
+              if ((float)counterL.rawCount >= (float)counterL.rawCount + max(0, overTurnL - 1)) {
+                motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+            }
+              if ((float)counterR.rawCount >= (float)counterR.rawCount + max(0, overTurnR - 1)) {
+                motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
+        }
+    }
           
 
           }
@@ -166,7 +183,16 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
         Serial.println("recurse PPL");
         Serial.println(overTurnL);
         Serial.println(overTurnR);
-        Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "R", max(35, Speed - 5)); 
+        motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
+        motors.changeStatus(MotorR, MOTOR_STATUS_CCW);
+        while ((float)counterL.rawCount < (float)counterL.rawCount + max(0, overTurnL - 1) || (float)counterR.rawCount < (float)counterR.rawCount + max(0, overTurnR - 1)) {
+              if ((float)counterL.rawCount >= (float)counterL.rawCount + max(0, overTurnL - 1)) {
+                motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+            }
+              if ((float)counterR.rawCount >= (float)counterR.rawCount + max(0, overTurnR - 1)) {
+                motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
+        }
+    }
         
       } else {
           if (overTurnL + overTurnR > 0) {
@@ -174,8 +200,17 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
             Serial.println(overTurnL);
             Serial.println(overTurnR);
             Serial.println(floor((overTurnL + overTurnR) / 2));
-            Turn((float)counterL.rawCount + max(0, overTurnL - 1), (float)counterR.rawCount +  max(0, overTurnR - 1), "R", max(35, Speed - 5));  //L > R
-            
+            // Turn((float)counterL.rawCount + max(0, overTurnL - 1), (float)counterR.rawCount +  max(0, overTurnR - 1), "R", max(35, Speed - 5));  //L > R
+            motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
+            motors.changeStatus(MotorR, MOTOR_STATUS_CCW);
+            while ((float)counterL.rawCount < (float)counterL.rawCount + max(0, overTurnL - 1) || (float)counterR.rawCount < (float)counterR.rawCount + max(0, overTurnR - 1)) {
+              if ((float)counterL.rawCount >= (float)counterL.rawCount + max(0, overTurnL - 1)) {
+                motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+            }
+              if ((float)counterR.rawCount >= (float)counterR.rawCount + max(0, overTurnR - 1)) {
+                motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
+        }
+    }
           }
       }
 

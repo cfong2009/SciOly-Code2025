@@ -114,26 +114,17 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
         Serial.println(overTurnL);
         Serial.println(overTurnR);
         Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "L", max(35, Speed - 5)); 
-        
-      } else if (overTurnL < 0 && overTurnR < 0) { 
-        Serial.println("recurse NN");
-        Serial.println(overTurnL);
-        Serial.println(overTurnR);
-        Turn((float)counterL.rawCount - overTurnL, (float)counterR.rawCount - overTurnR, "R", Speed); 
+      
    
       } else {
           if (overTurnL + overTurnR > 0) {
             Serial.println("recurse L > R R");
             Serial.println(overTurnL);
             Serial.println(overTurnR);
-            Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount +overTurnR, "L", max(35, Speed - 5));  //L > R
+            Turn((float)counterL.rawCount +  max(0, overTurnL - 1), (float)counterR.rawCount + max(0 ,overTurnR - 1), "L", max(35, Speed - 5));  //L > R
             
-          } else {
-            Serial.println("recurse R > L R");
-            Serial.println(overTurnL);
-            Serial.println(overTurnR);
-            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "R", Speed); // R > L
-            
+          
+
           }
       }
 
@@ -176,11 +167,6 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
         Serial.println(overTurnL);
         Serial.println(overTurnR);
         Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "R", max(35, Speed - 5)); 
-      } else if (overTurnL < 0 && overTurnR < 0) { 
-        Serial.println("recurse NN");
-        Serial.println(overTurnL);
-        Serial.println(overTurnR);
-        Turn((float)counterL.rawCount - overTurnL, (float)counterR.rawCount - overTurnR, "L", Speed); 
         
       } else {
           if (overTurnL + overTurnR > 0) {
@@ -188,13 +174,8 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
             Serial.println(overTurnL);
             Serial.println(overTurnR);
             Serial.println(floor((overTurnL + overTurnR) / 2));
-            Turn((float)counterL.rawCount + overTurnL, (float)counterR.rawCount + overTurnR, "R", max(35, Speed - 5));  //L > R
+            Turn((float)counterL.rawCount + max(0, overTurnL - 1), (float)counterR.rawCount +  max(0, overTurnR - 1), "R", max(35, Speed - 5));  //L > R
             
-          } else {
-            Serial.println("recurse asdfgaghtd");
-            Serial.println(overTurnL);
-            Serial.println(overTurnR);
-            Turn((float)counterL.rawCount + abs(overTurnL), (float)counterL.rawCount + abs(overTurnR), "L", Speed); // R > L        
           }
       }
 
@@ -222,5 +203,5 @@ void loop() {
   printEncoder();
 
   delay(5000);
-  Turn(tarL, tarR, "L", 40);
+  Turn(tarL, tarR, "R", 40);
 }

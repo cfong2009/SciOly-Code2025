@@ -53,7 +53,7 @@ void setup() {
   pinMode(lightPinR, INPUT);
   pinMode(LEDpin, OUTPUT);
   digitalWrite(LEDpin, HIGH);
-  display.setTextColor(WHITE); //this is often missed!!
+  display.setTextColor(WHITE);  //this is often missed!!
   display.setTextSize(1);
   display.clearDisplay();
 
@@ -76,13 +76,13 @@ void setup() {
 }
 
 void printEncoder() {
-    display.setCursor(0,0);
-    display.print("LR: ");
-    display.print((float)counterL.rawCount, 2);
-    display.setCursor(0,20);
-    display.print("RR: ");
-    display.print((float)counterR.rawCount, 2);
-    display.display();
+  display.setCursor(0, 0);
+  display.print("LR: ");
+  display.print((float)counterL.rawCount, 2);
+  display.setCursor(0, 20);
+  display.print("RR: ");
+  display.print((float)counterR.rawCount, 2);
+  display.display();
 }
 
 // void Turn(float tarL, float tarR, std::string d, int Speed) {
@@ -104,7 +104,7 @@ void printEncoder() {
 //     display.clearDisplay();
 
 //     printEncoder();
-   
+
 //     int overTurnL = (int)counterL.rawCount - (int)tarL;
 //     int overTurnR = (int)counterR.rawCount - (int)tarR;
 //     Serial.println(overTurnL);
@@ -125,13 +125,13 @@ void printEncoder() {
 //         }
 //           if ((float)counterR.rawCount >= (float)counterR.rawCount + max(0, overTurnR - 1)) {
 //             motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
-          
+
 //     }
-    
-//     } 
+
+//     }
 //     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
 //     motors.changeDuty(MotorR, 0);
-   
+
 //       } else {
 //           if (overTurnL + overTurnR > 0) {
 //             Serial.println("recurse L > R R");
@@ -152,7 +152,7 @@ void printEncoder() {
 //     }
 //     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
 //     motors.changeDuty(MotorR, 0);
-          
+
 
 //           }
 //       }
@@ -211,7 +211,7 @@ void printEncoder() {
 //     }
 //     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
 //     motors.changeDuty(MotorR, 0);
-        
+
 //       } else {
 //           if (overTurnL + overTurnR > 0) {
 //             Serial.println("recurse asd");
@@ -247,71 +247,68 @@ void printEncoder() {
 // }
 void Turn(float tarL, float tarR, std::string d, int Speed) {
   if (d == "R") {
-     motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
-     motors.changeStatus(MotorR, MOTOR_STATUS_CCW);
-     motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
-     motors.changeDuty(MotorR, Speed);
-     while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
-       if ((float)counterL.rawCount >= tarL) {
-         motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
-     }
-       if ((float)counterR.rawCount >= tarR) {
-         motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
-     }
-     }
-     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
-     motors.changeDuty(MotorR, 0);
-     display.clearDisplay();
-
-     printEncoder();
-  } else {
-     motors.changeStatus(MotorL, MOTOR_STATUS_CW);
-     motors.changeStatus(MotorR, MOTOR_STATUS_CW);
-     motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
-     motors.changeDuty(MotorR, Speed);
-     while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
-       if ((float)counterL.rawCount >= tarL) {
-         motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
-     }
-       if ((float)counterR.rawCount >= tarR) {
-         motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
-     }
-     }
-     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
-     motors.changeDuty(MotorR, 0);
-     display.clearDisplay();
-
-     printEncoder();
-    
-  }
-}
-void Forward(int distcm, int Speed) {
     motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
+    motors.changeStatus(MotorR, MOTOR_STATUS_CCW);
+    motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, Speed);
+    while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
+      if ((float)counterL.rawCount >= tarL) {
+        motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+      }
+      if ((float)counterR.rawCount >= tarR) {
+        motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
+      }
+    }
+    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, 0);
+    display.clearDisplay();
+
+    printEncoder();
+  } else {
+    motors.changeStatus(MotorL, MOTOR_STATUS_CW);
     motors.changeStatus(MotorR, MOTOR_STATUS_CW);
     motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
     motors.changeDuty(MotorR, Speed);
-    int encodeddist = ceil(distcm / 0.99695);
-    float tarL = (float)counterL.rawCount + encodeddist;
-    float tarR = (float)counterR.rawCount + encodeddist;
-
-
     while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
       if ((float)counterL.rawCount >= tarL) {
-        motors.changeDuty(MotorL, 0);  
-    }
+        motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+      }
       if ((float)counterR.rawCount >= tarR) {
-        motors.changeDuty(MotorR, 0); 
+        motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
+      }
     }
-    }
+    motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
+    motors.changeDuty(MotorR, 0);
+    display.clearDisplay();
+
+    printEncoder();
+  }
+}
+void Forward(int distcm, int Speed) {
+  motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
+  motors.changeStatus(MotorR, MOTOR_STATUS_CW);
+  motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
+  motors.changeDuty(MotorR, Speed);
+  int encodeddist = ceil(distcm / 0.99695);
+  float tarL = (float)counterL.rawCount + encodeddist;
+  float tarR = (float)counterR.rawCount + encodeddist;
 
 
+  while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
+    if ((float)counterL.rawCount >= tarL) {
+      motors.changeDuty(MotorL, 0);
+    }
+    if ((float)counterR.rawCount >= tarR) {
+      motors.changeDuty(MotorR, 0);
+    }
+  }
 }
 
-std::vector<std::string> commands = {"F20", "R90"};
+std::vector<std::string> commands = { "L90" };
 void loop() {
-  
+
   float runTime = 0.001 * millis();
-  
+
   int motorSpeedL = 40;
   int motorSpeedR = 40;
   revoL = getRotations(counterL);
@@ -330,10 +327,13 @@ void loop() {
       Turn((float)counterL.rawCount + degs, (float)counterR.rawCount + degs, "R", turnSpeed);
     } else if (command.substr(0, 1) == "L") {
       float degs = (stoi(command.substr(1, 2)) / 45) * 2;
-      Turn((float)counterL.rawCount + degs, (float)counterR.rawCount + degs, "L", turnSpeed);
+      Turn((float)counterL.rawCount + 8, (float)counterR.rawCount + 8, "L", turnSpeed);
 
     } else if (command.substr(0, 1) == "F") {
-      Forward(stoi(command.substr(1, 2)), 40);
+      Forward(stoi(command.substr(1, 2)), 60);
     }
+  }
+  while (1) {
+    delay(100);
   }
 }

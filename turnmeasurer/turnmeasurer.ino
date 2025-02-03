@@ -75,16 +75,6 @@ void setup() {
   setupCounters();
 }
 
-void printEncoder() {
-  display.setCursor(0, 0);
-  display.print("LR: ");
-  display.print((float)counterL.rawCount, 2);
-  display.setCursor(0, 20);
-  display.print("RR: ");
-  display.print((float)counterR.rawCount, 2);
-  display.display();
-}
-
 // void Turn(float tarL, float tarR, std::string d, int Speed) {
 //   if (d == "R") {
 //     motors.changeStatus(MotorL, MOTOR_STATUS_CCW);

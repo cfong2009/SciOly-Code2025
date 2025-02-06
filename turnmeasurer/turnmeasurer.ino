@@ -239,16 +239,12 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
   if (d == "R") {
     motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
     motors.changeStatus(MotorR, MOTOR_STATUS_CCW);
+    float EPs = Speed*20*60;
+    float tarTime = (max(tarL, tarR) / EPs) * 1000 + millis();
     motors.changeDuty(MotorL, Speed);  // Speed zero is stopped.
     motors.changeDuty(MotorR, Speed);
-    while ((float)counterL.rawCount < tarL || (float)counterR.rawCount < tarR) {
-      if ((float)counterL.rawCount >= tarL) {
-        motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
-      }
-      if ((float)counterR.rawCount >= tarR) {
-        motors.changeDuty(MotorR, 0);  // Speed zero is stopped.
-      }
-    }
+    while (millis() < tarTime);
+
     motors.changeDuty(MotorL, 0);  // Speed zero is stopped.
     motors.changeDuty(MotorR, 0);
     display.clearDisplay();
@@ -294,7 +290,7 @@ void Forward(int distcm, int Speed) {
   }
 }
 
-std::vector<std::string> commands = { "L90" };
+std::vector<std::string> commands = { "R90" };
 void loop() {
 
   float runTime = 0.001 * millis();

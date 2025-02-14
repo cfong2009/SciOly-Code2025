@@ -274,6 +274,8 @@ void Turn(float tarL, float tarR, std::string d, int Speed) {
     display.clearDisplay();
 
     printEncoder();
+  }
+}
 void Forward(int distcm, int Speed) {
   motors.changeStatus(MotorL, MOTOR_STATUS_CCW);
   motors.changeStatus(MotorR, MOTOR_STATUS_CW);
